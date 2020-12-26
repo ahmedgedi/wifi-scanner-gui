@@ -45,7 +45,7 @@ def pingsweep(ip):
 def start_scan(event):
     pat = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
     if pat.match(router_ip.get()):
-        print("acceptable IP has been given, commencing scan.")
+        continue
     else:
         tk.messagebox.showerror("ERROR", "Invalid IP address provided. Closing..")
         window.destroy()
