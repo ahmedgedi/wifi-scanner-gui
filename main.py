@@ -1,30 +1,28 @@
 import tkinter as tk
 import tkinter.messagebox
-import sys, socket
+import sys, socket, time
+import re
 
 window = tk.Tk()
 window.title('Wifi Device scanner')
 
-header = tk.Label(text="Open ports on your network")
+header = tk.Label(text="Open ports on your device")
 router_ip= tk.Entry(master=window, width=50)
 
 devices_found = []
 
-
 def list_devices(devices_found):
-    for i in devices_found:
-        for j in range(1, len(devices_found) + 1):
-            window.columnconfigure(0, weight=1, minsize=50)
+    for i, j in enumerate(devices_found):
+        window.columnconfigure(0, weight=1, minsize=50)
 
-            frame = tk.Frame(master=window, relief=tk.GROOVE, highlightbackground="black", highlightcolor="black", highlightthickness=1 )
-            frame.grid(row=j+2, column=0, padx=3, sticky="ew")
+        frame = tk.Frame(master=window, relief=tk.GROOVE, highlightbackground="black", highlightthickness=1 )
+        frame.grid(row=i+2, column=0, padx=5, sticky="ew")
 
-            lbl = tk.Label(master=frame, text=i, bg="white")
-            lbl.pack(fill=tk.X)
+        lbl = tk.Label(master=frame, text=j, bg="white", pady=2)
+        lbl.pack(fill=tk.X)
 
 
 def pingsweep(ip):
-    tkinter.messagebox.showinfo(title=None, message="Scanning your local network...")
     try:
         for port in range(1, 1024):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,19 +34,22 @@ def pingsweep(ip):
             s.close()
 
     except socket.gaierror:
-        print("\n Hostname could not be resolved. Exiting program...")
-        sys.exit()
+        tk.messagebox.showerror("ERROR", "Hostname could not be resolved. Exiting program...")
+        window.destroy()
 
     except socket.error:
-        print("\n Couldn't connect to server. Exiting program...")
-        sys.exit()
+        tk.messagebox.showerror("ERROR",  "Couldn't connect to server. Exiting program...")
+        window.destroy()
 
 
 def start_scan(event):
-    # TODO: simple check for now, need to add more stringent IP checking rules
-    if len(router_ip.get()) < 4: 
-        return print('invalid router IP')
-
+    pat = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+    if pat.match(router_ip.get()):
+        print("acceptable IP has been given, commencing scan.")
+    else:
+        tk.messagebox.showerror("ERROR", "Invalid IP address provided. Closing..")
+        window.destroy()
+    
     pingsweep(router_ip.get())
     list_devices(devices_found)
 
