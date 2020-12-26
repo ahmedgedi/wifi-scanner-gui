@@ -45,7 +45,7 @@ def pingsweep(ip):
 def start_scan(event):
     pat = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
     if pat.match(router_ip.get()):
-        continue
+        pass
     else:
         tk.messagebox.showerror("ERROR", "Invalid IP address provided. Closing..")
         window.destroy()
@@ -54,7 +54,7 @@ def start_scan(event):
     list_devices(devices_found)
 
 
-scan_btn = tk.Button(master=window, text="Scan your network")
+scan_btn = tk.Button(master=window, text="Scan your local network")
 scan_btn.bind("<Button-1>", start_scan)
 
 header.grid(row=2, sticky="ew")
