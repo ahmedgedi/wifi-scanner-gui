@@ -3,13 +3,15 @@ import tkinter.messagebox
 import sys, socket, time
 import re
 
+from setup import *
+
 window = tk.Tk()
 window.title('Wifi Device scanner')
 
 header = tk.Label(text="Open ports on your device")
 router_ip= tk.Entry(master=window, width=50)
 
-devices_found = []
+router_ip.insert(0, ip)
 
 def list_devices(devices_found):
     for i, j in enumerate(devices_found):
@@ -36,10 +38,12 @@ def pingsweep(ip):
     except socket.gaierror:
         tk.messagebox.showerror("ERROR", "Hostname could not be resolved. Exiting program...")
         window.destroy()
+        sys.exit("Hostname could not be resolved")
 
     except socket.error:
         tk.messagebox.showerror("ERROR",  "Couldn't connect to server. Exiting program...")
         window.destroy()
+        sys.exit("Hostname could not be resolved")
 
 
 def start_scan(event):
@@ -47,8 +51,9 @@ def start_scan(event):
     if pat.match(router_ip.get()):
         pass
     else:
-        tk.messagebox.showerror("ERROR", "Invalid IP address provided. Closing..")
+        tk.messagebox.showerror("ERROR", "Invalid IP address provided.\nClosing...")
         window.destroy()
+        sys.exit()
     
     pingsweep(router_ip.get())
     list_devices(devices_found)
